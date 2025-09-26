@@ -1,7 +1,5 @@
 package com.lgy.practice_8_1;
 
-import java.util.ArrayList;
-
 public class Singer {
 	private String name;
 	private int member;

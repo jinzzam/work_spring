@@ -124,7 +124,7 @@
 			<version>1.7.4</version>
 		</dependency>
 		
-		<!-- cglib -->
+<!-- 		cglib -->
 		<dependency>
 		    <groupId>com.kenai.nbpwr</groupId>
 		    <artifactId>net-sf-cglib</artifactId>
