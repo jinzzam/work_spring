@@ -1,0 +1,8 @@
+com.lgy.board_mysql.controller
+BoardController
+com.lgy.board_mysql.service
+BoardService(인터페이스)
+BoardListService
+com.lgy.board_mysql.dao
+BoardDAO
+com.lgy.board_mysql.dto

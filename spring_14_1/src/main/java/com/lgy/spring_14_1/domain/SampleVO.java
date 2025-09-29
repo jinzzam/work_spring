@@ -10,7 +10,7 @@ import lombok.Setter;
 //@Setter
 @NoArgsConstructor //기본 생성자
 @AllArgsConstructor //모든 프로퍼티를 파라미터로 가지는 생성자
-//@Data //여러가지 메소드 포함
+@Data //여러가지 메소드 포함
 public class SampleVO {
 	private int mno;
 	private String firstName;
