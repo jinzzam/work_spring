@@ -33,7 +33,10 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-		return "home";
+//		return "home";
+//		return "list"; => list.jsp로 바로 찾아감. 그러나 DB에 접근하지 않음.
+//		redirect:list => @RequestMapping("/list") 으로 찾아감
+		return "redirect:list";
 	}
 	
 }
