@@ -18,7 +18,5 @@ public class ItemContentService implements ItemService{
 		ItemDAO dao = new ItemDAO();
 		ArrayList<ItemDTO> dtos = dao.list();
 		model.addAttribute("list", dtos);
-		
 	}
-
 }

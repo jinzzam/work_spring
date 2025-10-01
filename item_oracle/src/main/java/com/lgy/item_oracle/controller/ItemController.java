@@ -17,33 +17,21 @@ import lombok.extern.slf4j.Slf4j;
 public class ItemController {
 	ItemService item;
 	
-	// 게시판 목록 조회
-	@RequestMapping("/list")
-	public String list(HttpServletRequest request, Model model) {
-		log.info("@# list()");
+	// 상품 목록 조회
+	@RequestMapping("/content_view")
+	public String content_view(Model model) {
+		log.info("@# content_view()");
 		
-		// service(command)단 호출
-		model.addAttribute("request", request);
 		item = new ItemContentService();
 		item.execute(model);
 		
 		return "content_view";
 	}
 	
+//	상품 등록
 	@RequestMapping("/write_result")
-	public String write_result(Model model) {
-		log.info("@# write_result()");
-		
-		// service(command)단 호출
-		item = new ItemContentService();
-		item.execute(model);
-		
-		return "write_result";
-	}
-
-	@RequestMapping("/write")
 	public String write(HttpServletRequest request, Model model) {
-		log.info("@# write()");
+		log.info("@# write_result()");
 		
 		model.addAttribute("request", request);
 		item = new ItemWriteService();
@@ -57,24 +45,7 @@ public class ItemController {
 	public String write_view(HttpServletRequest request, Model model) {
 		log.info("@# write_view()");
 		
-		model.addAttribute("request", request);
-		// service(command)단 호출
-		item = new ItemContentService();
-//		model에 request를 담고 있음
-		item.execute(model);
-		
-		return "write_result";
+		return "item_write";
 	}
 	
-	@RequestMapping("/content_view")
-//	request : 뷰에서 값을 받아옴
-	public String content_view(HttpServletRequest request, Model model) {
-		log.info("@# content_view()");
-		
-		item = new ItemContentService();
-//		model에 request를 담고 있음
-		item.execute(model);
-		
-		return "content_view";
-	}
 }

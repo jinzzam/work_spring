@@ -14,7 +14,6 @@ public class ItemWriteService implements ItemService{
 	@Override
 	public void execute(Model model) {
 		Map<String, Object> map = model.asMap();
-//		request : 컨트롤러단에서 보내주는 이름
 		HttpServletRequest request = (HttpServletRequest) map.get("request");
 		
 		String name = request.getParameter("name");
@@ -24,5 +23,4 @@ public class ItemWriteService implements ItemService{
 		ItemDAO dao = new ItemDAO();
 		dao.write(name, price, description);
 	}
-
 }

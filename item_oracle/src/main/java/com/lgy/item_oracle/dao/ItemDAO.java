@@ -18,6 +18,7 @@ public class ItemDAO {
 	public ItemDAO() {
 		try {
 			Context ctx = new InitialContext();
+//			dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/mysql");
 			dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/oracle");
 		} catch (NamingException e) {
 			e.printStackTrace();
@@ -40,9 +41,7 @@ public class ItemDAO {
 				String name = rs.getString("name");
 				int price = rs.getInt("price");
 				String description = rs.getString("description");
-//				하나의 게시글 객체
 				ItemDTO dto = new ItemDTO(name, price, description);
-//				게시글을 추가(dtos : 여러 게시글이 될 수 있음)
 				dtos.add(dto);
 			}
 		} catch (Exception e) {
