@@ -1,7 +1,11 @@
 package com.lgy.member_mybatis_oracle.dao;
 
+import java.util.ArrayList;
+
+import com.lgy.member_mybatis_oracle.dto.MemDTO;
+
 public interface MemDAO {
-	public int loginYn(String id, String pw);
+	public ArrayList<MemDTO> loginYn(String id, String pw);
 	public void write(final String mem_uid, final String mem_pwd, final String mem_name);
 	/*
 	JdbcTemplate template=null;

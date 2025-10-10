@@ -11,6 +11,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+/*
+ * member_jdbc_oracle 참고 - 패키지 내 내용
+ * item_mybatis_oracle 참고 - main
+ * */
+
 /**
  * Handles requests for the application home page.
  */
