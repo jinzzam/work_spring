@@ -16,6 +16,7 @@
   limitations under the License.
 --><!-- The contents of this file will be loaded for each web application --><Context>
 
+
     <!-- Default set of monitored resources. If one of these changes, the    -->
     <!-- web application will be reloaded.                                   -->
     <WatchedResource>WEB-INF/web.xml</WatchedResource>
@@ -34,6 +35,4 @@
 			  maxIdle="30" maxTotal="100" maxWaitMillis="10000" name="jdbc/oracle"
 			  password="tiger" type="javax.sql.DataSource"
 			  url="jdbc:oracle:thin:@127.0.0.1:1521:xe" username="scott"/>
-	
-    
 </Context>
