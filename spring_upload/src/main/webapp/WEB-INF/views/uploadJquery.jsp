@@ -102,13 +102,34 @@ $(document).ready(function() {
 // 					썸네일 파일 경로 + 이름
 					var fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
 // 					str += "<li><img src='./resources/img/attach.png'>"+obj.fileName+"</li>";
+// 					str += "<li><a href='./download?fileName="+fileCallPath+"'>"
+// 							  +"<img src='./resources/img/attach.png'>"+obj.fileName+"</li>";
+// 					x 표시 추가
 					str += "<li><a href='./download?fileName="+fileCallPath+"'>"
-							  +"<img src='./resources/img/attach.png'>"+obj.fileName+"</li>";
+							  +"<img src='./resources/img/attach.png'>"+obj.fileName + "</a>"
+ 							  +"<span data-file=\'"+fileCallPath+"\' data-type='file'>X</span>"
+							  +"</li>";
 				}else{// 이미지인 경우
 // 					썸네일 파일 경로 + 이름
 					var fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+// 					원본 파일 경로 + 이름
+					var originalPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName;
+					console.log("@# originalPath=>"+originalPath);
+// 					백슬래시 -> 슬래시로 변경
+					originalPath = originalPath.replace(new RegExp(/\\/g),"/");
+					console.log("@# originalPath2=>"+originalPath);
+					
 // 					썸네일 파일 경로 추가
-					str += "<li><img src='./display?fileName="+fileCallPath+"'></li>";
+// 					str += "<li><img src='./display?fileName="+fileCallPath+"'></li>";
+					
+// 					썸네일 경로 + 원본 이미지 파일 정보
+// 					str += "<li><a href=\"javascript:showImage(\'"+originalPath+"\')\"><img src='./display?fileName="
+// 							+fileCallPath+"'></li>";
+// 					x 표시 추가
+					str += "<li><a href=\"javascript:showImage(\'"+originalPath+"\')\"><img src='./display?fileName="
+							+fileCallPath+"'></a>"
+							+"<span data-file=\'"+fileCallPath+"\' data-type='image'>X</span>"
+						  +"</li>";
 				
 	// 				obj.fileName : 업로드파일 이름
 // 					str += "<li>"+obj.fileName+"</li>";
@@ -121,13 +142,52 @@ $(document).ready(function() {
 			
 // 			div class에 파일 목록 추가
 			uploadResult.append(str);
+			$(".uploadResult").on("click", "span", function(){
+				var uploadResultItem = $(this).closest("li");
+				console.log("@# uploadResultItem=>"+uploadResultItem);
+				var targetFile = $(this).data("file");
+				var targetType = $(this).data("type");
+				
+				$.ajax({
+					type:"post"
+					,url:"deleteFile"
+					,data:{fileName:targetFile, type:targetType}
+					,dataType:"text"
+					,success: function(result){
+						alert(result);
+						uploadResultItem.remove();
+					}
+				}); //end of $.ajax
+				
+// 				화면에서 삭제
+// 				uploadResultItem.remove();
+			});//end of span function
+			
 		}
+		
+		$(".bigPictureWrapper").on("click", function(){
+			setTimeout(function() {
+				$(".bigPictureWrapper").hide();
+			}, 1000);
+		}); //end of $(".bigPictureWrapper").on("click")
 	});//end of ready function
+	
+// 	원본 이미지 출력
+	function showImage(fileCallPath){
+// 		alert("@# fileCallPath =>" + fileCallPath);
+		$(".bigPictureWrapper").css("display", "flex").show();
+		$(".bigPicture").html("<img src='./display?fileName="+fileCallPath+"'>")
+						.animate({width:"100%", height:"100%"}, 1000);
+	}
 </script>
 </head>
 <body>
 	<h1>Upload with Jquery</h1>
 	
+	<div class="bigPictureWrapper">
+		<div class="bigPicture">
+		</div>
+	</div>
 	<div class="uploadDiv">
 		<input type="file" name="uploadFile" multiple>
 	</div>

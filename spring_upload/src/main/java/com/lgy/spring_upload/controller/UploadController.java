@@ -2,6 +2,7 @@ package com.lgy.spring_upload.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -221,6 +222,39 @@ public class UploadController {
 		}
 //		윈도우 다운로드 시 필요한 정보 (리소스, 헤더, 상태 OK)
 		return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
+	}
+
+	@PostMapping(value = "/deleteFile")
+	@ResponseBody
+	public ResponseEntity<String> deleteFile(String fileName, String type) {
+		log.info("@# fileName => " + fileName);
+		File file;
+
+		try {
+//			file = new File("C:\\temp\\upload\\" + fileName);
+//			URLDecoder.decode : 서버에 올라간 파일을 삭제하기 위해서 디코딩
+			file = new File("C:\\temp\\upload\\" + URLDecoder.decode(fileName, "UTF-8"));
+			log.info("@# file => "+file);
+//			폴더 파일 삭제
+			file.delete();
+			
+//			이미지 파일이면 썸네일도 삭제
+			if(type.equals("image")) {
+//				getAbsolutePath : 절대 경로 (full path)
+				String largeFileName = file.getAbsolutePath().replace("s_", "");
+				log.info("@# largeFileName  => "+largeFileName );
+
+				file = new File(largeFileName);
+//				썸네일 삭제
+				file.delete();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+//			예외 오류 발생시 not found 처리
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		}
+//		deleted : success의 result로 전송
+		return new ResponseEntity<String>("deleted", HttpStatus.OK);
 	}
 }
 
