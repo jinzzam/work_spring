@@ -5,44 +5,43 @@
 <mapper namespace="com.lgy.paging_oracle.dao.BoardDAO">
     
     <select id="list" resultType="com.lgy.paging_oracle.dto.BoardDTO">
-    	
         select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit from tbl_board
     </select>
 
     <select id="listWithPaging" resultType="com.lgy.paging_oracle.dto.BoardDTO">
 
     	<![CDATA[
-		SELECT
-    rn,
-    boardno,
-    boardname,
-    boardtitle,
-    boardcontent,
-    boarddate,
-    boardhit
-FROM (
-    SELECT
-        ROWNUM rn,
-        boardno,
-        boardname,
-        boardtitle,
-        boardcontent,
-        boarddate,
-        boardhit
-    FROM (
-        SELECT
-            boardno,
-            boardname,
-            boardtitle,
-            boardcontent,
-            boarddate,
-            boardhit
-        FROM tbl_board
-        ORDER BY boardno DESC
-    )
-    WHERE ROWNUM <= (#{pageNum} * #{amount})
-)
-WHERE rn > (#{pageNum}-1) * #{amount}
+			SELECT
+			    rn,
+			    boardno,
+			    boardname,
+			    boardtitle,
+			    boardcontent,
+			    boarddate,
+			    boardhit
+			FROM (
+			    SELECT
+			        ROWNUM rn,
+			        boardno,
+			        boardname,
+			        boardtitle,
+			        boardcontent,
+			        boarddate,
+			        boardhit
+			    FROM (
+			        SELECT
+			            boardno,
+			            boardname,
+			            boardtitle,
+			            boardcontent,
+			            boarddate,
+			            boardhit
+			        FROM tbl_board
+			        ORDER BY boardno DESC
+			    )
+			    WHERE ROWNUM <= (#{pageNum} * #{amount})
+			)
+			WHERE rn > (#{pageNum}-1) * #{amount}
     	]]>
     </select>
     
@@ -63,4 +62,7 @@ WHERE rn > (#{pageNum}-1) * #{amount}
 		delete from tbl_board where boardNo=#{boardNo}
     </delete>
     
+    <select id="getTotalCount" resultType="int">
+		select count(*) from tbl_board
+    </select>
 </mapper>

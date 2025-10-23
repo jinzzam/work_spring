@@ -77,7 +77,8 @@
 		</ul>
 	</div>
 		
-		<form method="get" id="actionForm" action="list">
+<!-- 		<form method="get" id="actionForm" action="list"> -->
+		<form method="get" id="actionForm">
 			<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
 			<input type="hidden" name="amount" value="${pageMaker.cri.amount}">
 		</form>
@@ -94,8 +95,17 @@
 // 		console.log("click~!");
 		console.log("@# href=>" + $(this).attr("href"));
 		
+		var bno = actionForm.find("input[name='boardNo']").val();
+		console.log("@# bno=>"+bno);
+		
+// 		게시글 클릭 후 뒤로가기 누르고 페이지 번호 누를 때 &boardNo=번호 계속 누적되는 거 방지
+		if(bno != ""){
+			actionForm.find("input[name='boardNo']").remove();
+		}
+		
 		actionForm.find("input[name='pageNum']").val($(this).attr("href"));
-		actionForm.submit();
+// 		actionForm.submit();
+		actionForm.attr("action", "list").submit();
 	});
 
 	//게시글 처리
@@ -104,6 +114,14 @@
 		console.log("move click~!");
 		console.log("@# href=>" + $(this).attr("href"));
 		var targetBno = $(this).attr("href");
+		
+		var bno = actionForm.find("input[name='boardNo']").val();
+		console.log("@# bno=>"+bno);
+		
+// 		게시글 클릭 후 뒤로가기 누르고, 글 번호 누를 때 &boardNo=번호 계속 누적되는 거 방지
+		if(bno != ""){
+			actionForm.find("input[name='boardNo']").remove();
+		}
 		
 		actionForm.append("<input type='hidden' name='boardNo' value='"+targetBno+"'>");
 		

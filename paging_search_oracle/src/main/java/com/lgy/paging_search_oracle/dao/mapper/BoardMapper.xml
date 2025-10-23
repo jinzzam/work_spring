@@ -1,0 +1,113 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lgy.paging_search_oracle.dao.BoardDAO">
+    
+<!--  	id는 include refid와 매칭 -->
+	<sql id="criteria">
+<!-- 	prefix : 쿼리 내용 시작할 때 추가 -->
+<!-- 	suffix : 쿼리 내용 종료할 때 추가 -->
+<!-- 	prefixOverrides : 쿼리 내용에서 시작 시 삭제하는 문자열 -->
+		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+<!-- 		item="type" : 분기 처리 기준 -->
+<!-- 		collection="typeArr" : type값을 처리(mybatis에서 getTypeArr()메소드 호출) -->
+			<foreach item="type" collection="typeArr">
+<!-- 			type이 TC, TW, TCW가 오면 type.split("")로 분기 처리 -->
+<!-- 		prefix="OR" : 조건이 2개 이상일 때 OR를 추가 -->
+			<trim prefix="OR">
+				<choose>
+<!-- 				검색 조건이 제목일 때 -->
+					<when test="type == 'T'.toString()">
+						boardTitle like '%' || #{keyword} || '%'
+					</when>
+<!-- 				검색 조건이 내용일 때 -->
+					<when test="type == 'C'.toString()">
+						boardContent like '%' || #{keyword} || '%'
+					</when>
+<!-- 				검색 조건이 작성자일 때 -->
+					<when test="type == 'W'.toString()">
+						boardName like '%' || #{keyword} || '%'
+					</when>
+				</choose>
+			</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+	<sql id="criteria2">
+		<if test='type == "T"'>
+			(boardTitle like '%' || #{keyword} || '%') AND	
+		</if>
+		<if test='type == "C"'>
+			(boardContent like '%' || #{keyword} || '%') AND	
+		</if>
+		<if test='type == "W"'>
+			(boardName like '%' || #{keyword} || '%') AND	
+		</if>
+		<if test='type == "TC"'>
+			(boardTitle like '%' || #{keyword} || '%' OR boardContent like '%' || #{keyword} || '%') AND	
+		</if>
+		<if test='type == "TW"'>
+			(boardTitle like '%' || #{keyword} || '%' OR boardName like '%' || #{keyword} || '%') AND	
+		</if>
+		<if test='type == "TCW"'>
+			(boardTitle like '%' || #{keyword} || '%' OR boardContent like '%' || #{keyword} || '%' OR boardName like '%' || #{keyword} || '%') AND	
+		</if>
+	</sql>
+<!-- 
+제목 T
+내용 C
+작성자	W
+제 or 내 TC
+TW, TCW
+ -->	
+       	    <select id="listWithPaging" resultType="com.lgy.paging_search_oracle.dto.BoardDTO">
+    <!--     <![CDATA[]]> : mybatis 에서 특수문자 인식 처리 -->
+    	<![CDATA[
+			SELECT rn, boardNo, boardName, boardTitle, boardContent, boardDate, boardHit
+			 FROM (SELECT rownum rn, boardNo, boardName, boardTitle, boardContent, boardDate, boardHit 
+			         FROM (SELECT boardNo, boardName, boardTitle, boardContent, boardDate, boardHit
+			                 FROM tbl_board
+			        		ORDER BY boardno DESC
+			              )
+			        WHERE 
+    	]]>
+<!--     	<include refid="criteria"></include> -->
+    	<include refid="criteria2"></include>
+    	<![CDATA[
+				ROWNUM <= (#{pageNum} * #{amount})
+			      )
+			 WHERE rn > (#{pageNum}-1) * #{amount}
+ 		]]>
+    </select>
+
+
+   <select id="list" resultType="com.lgy.paging_search_oracle.dto.BoardDTO">
+        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit from tbl_board
+    </select>
+    
+    <insert id="write">
+    	insert into tbl_board(boardName, boardTitle, boardContent) values(#{boardName},#{boardTitle},#{boardContent})
+    </insert>
+ 
+    <select id="contentView" resultType="com.lgy.paging_search_oracle.dto.BoardDTO">
+        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit from tbl_board where boardNo=#{boardNo}
+    </select>
+
+    <update id="modify">
+    	update tbl_board set boardName=#{boardName}, boardTitle=#{boardTitle}
+    					   , boardContent=#{boardContent} where boardNo=#{boardNo}
+    </update>
+
+    <delete id="delete">
+		delete from tbl_board where boardNo=#{boardNo}
+    </delete>
+    
+    <select id="getTotalCount" resultType="int">
+		select count(*) from tbl_board
+		 where
+		<include refid="criteria2"></include>
+		1=1		
+    </select>
+</mapper>

@@ -63,6 +63,16 @@ public class BoardServiceImpl implements BoardService{
 		dao.delete(param);
 	}
 
+	@Override
+	public int getTotalCount() {
+		log.info("@# getTotalCount()");
+		
+		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
+		int count = dao.getTotalCount();
+		
+		return count;
+	}
+
 
 	
 

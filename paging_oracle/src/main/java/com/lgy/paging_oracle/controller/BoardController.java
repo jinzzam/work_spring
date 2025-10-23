@@ -6,8 +6,10 @@ import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lgy.paging_oracle.dto.BoardDTO;
 import com.lgy.paging_oracle.dto.Criteria;
@@ -38,8 +40,11 @@ public class BoardController {
 		log.info("@# cri=>"+cri);
 		
 		ArrayList<BoardDTO> list = service.list(cri);
+		int total = service.getTotalCount();
+		
 		model.addAttribute("list", list);
-		model.addAttribute("pageMaker", new PageDTO(123, cri));
+//		model.addAttribute("pageMaker", new PageDTO(123, cri));
+		model.addAttribute("pageMaker", new PageDTO(total, cri));
 		return "list";
 	}
 	
@@ -76,20 +81,35 @@ public class BoardController {
 	
 	
 	@RequestMapping("/modify")
-	public String modify(@RequestParam HashMap<String, String> param, Model model) {
+//	public String modify(@RequestParam HashMap<String, String> param, Model model) {
+//	RedirectAttributes rttr : 쿼리 스트링 뒤에 추가
+//	@ModelAttribute("cri") Criteria cri : Criteria 객체를 cri로 받는다
+	public String modify(@RequestParam HashMap<String, String> param,
+						 @ModelAttribute("cri") Criteria cri,
+						 RedirectAttributes rttr) {
 		log.info("@# modify()");
+		log.info("@# cri=>"+cri);
 		
 		service.modify(param);
+//		페이지 이동 시 뒤에 페이지 번호, 글 개수 추가
+		rttr.addAttribute("pageNum", cri.getPageNum());
+		rttr.addAttribute("amount", cri.getAmount());
 		
 		return "redirect:list";
 	}
 	
 	
 	@RequestMapping("/delete")
-	public String delete(@RequestParam HashMap<String, String> param, Model model) {
+//	public String delete(@RequestParam HashMap<String, String> param, Model model) {
+	public String delete(@RequestParam HashMap<String, String> param,
+			 			 @ModelAttribute("cri") Criteria cri,
+			 			 RedirectAttributes rttr) {
 		log.info("@# delete()");
+		log.info("@# cri=>"+cri);
 		
 		service.delete(param);
+		rttr.addAttribute("pageNum", cri.getPageNum());
+		rttr.addAttribute("amount", cri.getAmount());
 		
 		return "redirect:list";
 	}
